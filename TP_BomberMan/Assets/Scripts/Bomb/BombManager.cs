@@ -8,6 +8,9 @@ public class BombManager : MonoBehaviour
     [SerializeField] private GameObject _bombPrefab;
     public Queue<GameObject> Bombs { get; set; } = new();
 
+    public List<BombBehaviour> OnFieldBombs { get; set; } = new();
+
+
     // Singleton
     #region Singleton
     private static BombManager _instance;
@@ -60,6 +63,8 @@ public class BombManager : MonoBehaviour
         bomb.TryGetComponent(out BombBehaviour behaviour);
         behaviour.Collider.enabled = true;
         behaviour.SpriteRenderer.sortingOrder = 11;
+        bomb.transform.position = Vector3.zero;
+        OnFieldBombs.Add(behaviour);
         return bomb;
     }
 }

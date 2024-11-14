@@ -26,7 +26,7 @@ public class PlayerAnimation : MonoBehaviour
 
     private void Update()
     {
-        _isMoving = (_rb.velocity.x != 0 | _rb.velocity.y != 0);
+        _isMoving = (Mathf.Round(_rb.velocity.x) != 0 | Mathf.Round(_rb.velocity.y) != 0);
         _isHolding = _pHold.BombSlot.transform.childCount > 0;
         _animator.SetBool("IsMoving", _isMoving);
         _animator.SetBool("IsHolding", _isHolding);
