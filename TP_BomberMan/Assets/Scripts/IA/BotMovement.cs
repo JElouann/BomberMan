@@ -48,7 +48,10 @@ public class BotMovement : MonoBehaviour
 
         if (dir.magnitude <= 0.3f) 
         {
+            if (_path.Count <= 0) return;
             _targetNode = _path.Pop();
+            print(_targetNode.transform.position);
+
         }
         _rb.velocity = dir.normalized * _speed * Time.deltaTime;
     }
