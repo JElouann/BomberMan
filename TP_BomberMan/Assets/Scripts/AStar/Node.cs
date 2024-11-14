@@ -26,9 +26,10 @@ public class Node : MonoBehaviour
         StartCoroutine(CheckNeighbours());
     }
 
+
     public IEnumerator CheckNeighbours()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0);
         int layer_mask = LayerMask.GetMask("Node");
         TryGetComponent(out Collider2D ownCollider);
 
@@ -71,18 +72,6 @@ public class Node : MonoBehaviour
                 this.Neighbours.Add(node);
             }
         }
-
-        //List<RaycastHit2D> hits = new() { topHit, botHit, leftHit, rightHit };
-
-        //foreach (RaycastHit2D hit in hits)
-        //{
-        //    if (hit.collider != null) print("différent de null");
-        //    if (hit.collider.isTrigger && hit.collider != ownCollider)
-        //    {
-        //        hit.collider.TryGetComponent(out Node node);
-        //        this.Neighbours.Add(node);
-        //    }
-        //}
     }
 
     public float GetF()

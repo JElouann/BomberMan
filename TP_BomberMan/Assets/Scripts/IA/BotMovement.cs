@@ -15,7 +15,7 @@ public class BotMovement : MonoBehaviour
     // the node we're currently overlapping
     private Node _currentNode;
     // the node which we're currently going toward
-    private Node _targetNode;
+    public Node _targetNode;
 
     // the stack from which we pick the target node
     private Stack<Node> _path;
@@ -31,6 +31,7 @@ public class BotMovement : MonoBehaviour
     {
         _rb = TryGetComponent(out Rigidbody2D rb) ? rb : null;
         _animation = TryGetComponent(out PlayerAnimation animation) ? animation : null;
+        UpdatePath();
     }
 
     private void UpdatePath()
@@ -40,12 +41,12 @@ public class BotMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //Vector3 dir = _targetNode.transform.position;
-        
-        //_rb.velocity = dir.normalized * _speed;
+        Vector3 dir = _targetNode.transform.position - this.transform.position;
+
+        _rb.velocity = dir.normalized * _speed;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.TryGetComponent(out Node node))
         {
