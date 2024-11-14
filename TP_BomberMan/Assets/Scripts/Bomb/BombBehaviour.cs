@@ -44,12 +44,20 @@ public class BombBehaviour : MonoBehaviour
             {
                 StartCoroutine(obstacle.Destroy());
             }
+            if (topHit.collider.TryGetComponent(out Sheep sheep))
+            {
+                sheep.Damage();
+            }
         }
         if (botHit.collider != null)
         {
             if (botHit.collider.TryGetComponent(out Obstacle obstacle))
             {
                 StartCoroutine(obstacle.Destroy());
+            }
+            if (botHit.collider.TryGetComponent(out Sheep sheep))
+            {
+                sheep.Damage();
             }
         }
         if (leftHit.collider != null)
@@ -58,12 +66,20 @@ public class BombBehaviour : MonoBehaviour
             {
                 StartCoroutine(obstacle.Destroy());
             }
+            if (leftHit.collider.TryGetComponent(out Sheep sheep))
+            {
+                sheep.Damage();
+            }
         }
         if (rightHit.collider != null)
         {
             if (rightHit.collider.TryGetComponent(out Obstacle obstacle))
             {
                 StartCoroutine(obstacle.Destroy());
+            }
+            if (rightHit.collider.TryGetComponent(out Sheep sheep))
+            {
+                sheep.Damage();
             }
         }
     }

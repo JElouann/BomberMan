@@ -17,7 +17,6 @@ public class PlayerHold : MonoBehaviour
     public void DropBomb(InputAction.CallbackContext context)
     {
         if (!context.performed | BombSlot.transform.childCount <= 0) return;
-        print("dropped");
         GameObject bomb = BombSlot.transform.GetChild(0).gameObject;
         bomb.TryGetComponent(out BombBehaviour bombBehaviour);
         StartCoroutine(bombBehaviour.OnDrop());
