@@ -31,19 +31,26 @@ public class BotMovement : MonoBehaviour
     {
         _rb = TryGetComponent(out Rigidbody2D rb) ? rb : null;
         _animation = TryGetComponent(out PlayerAnimation animation) ? animation : null;
-        UpdatePath();
     }
 
-    private void UpdatePath()
+    public void UpdatePath()
     { 
         _path = Graph.Instance.GetPath(_currentNode, _targetNode);
+        _targetNode = _path.Pop();
+        print(_targetNode.transform.position);
     }
 
     private void FixedUpdate()
     {
+        if (_targetNode == null) return;
+
         Vector3 dir = _targetNode.transform.position - this.transform.position;
 
-        _rb.velocity = dir.normalized * _speed;
+        if (dir.magnitude <= 0.3f) 
+        {
+            _targetNode = _path.Pop();
+        }
+        _rb.velocity = dir.normalized * _speed * Time.deltaTime;
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -51,8 +58,8 @@ public class BotMovement : MonoBehaviour
         if (collision.TryGetComponent(out Node node))
         {
             _currentNode = node;
-            if (node != _targetNode) return;
-            _targetNode = _path.Pop();
+            //if (node != _targetNode) return;
+            //_targetNode = _path.Pop();
         }
     }
 
