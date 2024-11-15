@@ -77,9 +77,9 @@ public class BotMovement : MonoBehaviour
             }
             else
             {
-                //Vector3 dir = this.transform.position - _targetNode.transform.position;
-                //_rb.velocity = dir.normalized * Time.deltaTime * _speed;
-                this.transform.position = _targetNode.transform.position;
+                Vector3 dir = _targetNode.transform.position - this.transform.position;
+                _rb.velocity = dir.normalized * Time.deltaTime * _speed;
+                //this.transform.position = _targetNode.transform.position;
             }
             await Task.Delay(500);
         }
