@@ -78,6 +78,7 @@ public class Graph : MonoBehaviour
         NumOfIteration = 0;
         StartNode = start;
         EndNode = end;
+        _finished = false;
 
         Stack<Node> path = new Stack<Node>();
         
@@ -102,6 +103,7 @@ public class Graph : MonoBehaviour
         ResetNodes();
         OpenedNeighbours.Clear();
         NeighboursFValues.Clear();
+
         CurrentNode = StartNode;
         OpenedNeighbours.Add(CurrentNode);
 
