@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -41,28 +42,46 @@ public class BotMovement : MonoBehaviour
             node.HasToUsePriorityColor = true;
         }
         _targetNode = _path.Pop();
+        Travel();
     }
 
-    private void FixedUpdate()
+    //private void FixedUpdate()
+    //{
+    //    if (_path.Count <= 0) return;
+
+    //    Vector3 dir = this.transform.position - _targetNode.transform.position;
+
+    //    if (dir.magnitude <= 0.3f) 
+    //    {
+    //        if (_path.Count <= 0)
+    //        {
+    //            print("arrivé");
+    //            _targetNode = null;
+    //            _rb.velocity = Vector3.zero;
+    //            dir = Vector3.zero;
+    //            return;
+    //        }
+    //        _targetNode = _path.Pop();
+
+    //    }
+    //    _rb.velocity = dir.normalized * _speed * Time.deltaTime;
+    //}
+
+    private async void Travel()
     {
-        if (_path.Count <= 0) return;
-
-        Vector3 dir = this.transform.position - _targetNode.transform.position;
-
-        if (dir.magnitude <= 0.3f) 
+        while(_path.Count > 0)
         {
-            if (_path.Count <= 0)
+            if(_currentNode == _targetNode)
             {
-                print("arrivé");
-                _targetNode = null;
-                _rb.velocity = Vector3.zero;
-                dir = Vector3.zero;
-                return;
+                _targetNode = _path.Pop();
             }
-            _targetNode = _path.Pop();
-
+            else
+            {
+                Vector3 dir = this.transform.position - _targetNode.transform.position;
+                _rb.velocity = dir.normalized * Time.deltaTime * _speed;
+            }
+            await Task.Delay(100);
         }
-        _rb.velocity = dir.normalized * _speed * Time.deltaTime;
     }
 
     private void OnTriggerStay2D(Collider2D collision)
