@@ -47,7 +47,7 @@ public class BotMovement : MonoBehaviour
     {
         if (_path.Count <= 0) return;
 
-        Vector3 dir = _targetNode.transform.position - this.transform.position;
+        Vector3 dir = this.transform.position - _targetNode.transform.position;
 
         if (dir.magnitude <= 0.3f) 
         {
@@ -72,7 +72,10 @@ public class BotMovement : MonoBehaviour
             _currentNode = node;
             if(node == _targetNode && _path.Count > 0)
             {
+                print("AAAAAAAAAA");
+                _targetNode.HasToUsePriorityColor = false;
                 _targetNode = _path.Pop();
+                _targetNode.HasToUsePriorityColor = true;
             }
             else if(node == _targetNode && _path.Count == 0)
             {

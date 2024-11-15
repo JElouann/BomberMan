@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Node : MonoBehaviour
 {
+    public bool HasToUsePriorityColor;
     public Color PriorityColor;
     public Graph ParentGraph;
     public List<Node> Neighbours;
@@ -109,8 +110,8 @@ public class Node : MonoBehaviour
             Gizmos.color = ColorChange();
         }
 
-        //Gizmos.DrawSphere(this.transform.position, 0.5f);
-        foreach(Node node in Neighbours)
+        Gizmos.DrawSphere(this.transform.position, 0.5f);
+        foreach (Node node in Neighbours)
         {
             if (node == null | ParentGraph.DrawLines == false) break;
             Gizmos.color = ParentGraph.LineColor;

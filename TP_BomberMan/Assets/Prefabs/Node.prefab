@@ -46,7 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59fb5f8ac0d617542a973dee45cf6e99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PriorityColor: {r: 0, g: 0, b: 0, a: 0}
+  HasToUsePriorityColor: 0
+  PriorityColor: {r: 1, g: 0, b: 0.8421254, a: 1}
   ParentGraph: {fileID: 0}
   Neighbours: []
   PrecedentNode: {fileID: 0}

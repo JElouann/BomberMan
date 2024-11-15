@@ -75,6 +75,7 @@ public class Graph : MonoBehaviour
 
     public Stack<Node> GetPath(Node start, Node end)
     {
+        NumOfIteration = 0;
         StartNode = start;
         EndNode = end;
 
@@ -98,6 +99,7 @@ public class Graph : MonoBehaviour
         List<Node> path = new List<Node>();
 
         // initialiser la méthode
+        ResetNodes();
         CurrentNode = StartNode;
         OpenedNeighbours.Add(CurrentNode);
 
@@ -179,6 +181,16 @@ public class Graph : MonoBehaviour
                 OpenedNeighbours.Add(neighbour);
                 NeighboursFValues.Add(neighbour.GetF());                
             }
+        }
+    }
+
+    public void ResetNodes()
+    {
+        foreach(Node node in Nodes)
+        {
+            node.State = NodeStateEnum.Base;
+            node.PrecedentNode = null;
+            node.Rank = 0;
         }
     }
 }
