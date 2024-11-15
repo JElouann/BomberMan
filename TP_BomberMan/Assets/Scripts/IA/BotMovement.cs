@@ -77,10 +77,11 @@ public class BotMovement : MonoBehaviour
             }
             else
             {
-                Vector3 dir = this.transform.position - _targetNode.transform.position;
-                _rb.velocity = dir.normalized * Time.deltaTime * _speed;
+                //Vector3 dir = this.transform.position - _targetNode.transform.position;
+                //_rb.velocity = dir.normalized * Time.deltaTime * _speed;
+                this.transform.position = _targetNode.transform.position;
             }
-            await Task.Delay(100);
+            await Task.Delay(500);
         }
     }
 
@@ -105,13 +106,13 @@ public class BotMovement : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.TryGetComponent(out Node node))
-        {
-            _currentNode = null;
-        }
-    }
+    //private void OnTriggerExit2D(Collider2D collision)
+    //{
+    //    if (collision.TryGetComponent(out Node node))
+    //    {
+    //        _currentNode = null;
+    //    }
+    //}
 
     // detects if bot is blocked by obstacle
     // if it's the case, has to look for a bomb to destroy it
