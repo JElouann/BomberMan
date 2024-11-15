@@ -100,6 +100,7 @@ public class Graph : MonoBehaviour
 
         // initialiser la méthode
         ResetNodes();
+        OpenedNeighbours.Clear();
         CurrentNode = StartNode;
         OpenedNeighbours.Add(CurrentNode);
 
