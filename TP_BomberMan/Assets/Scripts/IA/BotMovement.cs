@@ -19,8 +19,12 @@ public class BotMovement : MonoBehaviour
 
     // the node we're currently overlapping
     private Node _currentNode;
+
+    public Node PushToTarget;
+
+
     // the node which we're currently going toward
-    public Node _targetNode;
+    private Node _targetNode;
 
     // the stack from which we pick the target node
     private Stack<Node> _path = new();
@@ -36,60 +40,35 @@ public class BotMovement : MonoBehaviour
     public void UpdatePath()
     { 
         _path.Clear();
-        _path = Graph.Instance.GetPath(_currentNode, _targetNode);
+
+        _path = Graph.Instance.GetPath(_currentNode, PushToTarget);
         foreach(Node node in _path)
         {
             node.HasToUsePriorityColor = true;
             print(Graph.Instance.Nodes.IndexOf(node));
         }
         _targetNode = _path.Pop();
-        Travel();
+        //Travel();
     }
 
-    //private void FixedUpdate()
-    //{
-    //    if (_path.Count <= 0) return;
-
-    //    Vector3 dir = this.transform.position - _targetNode.transform.position;
-
-    //    if (dir.magnitude <= 0.3f) 
-    //    {
-    //        if (_path.Count <= 0)
-    //        {
-    //            print("arrivé");
-    //            _targetNode = null;
-    //            _rb.velocity = Vector3.zero;
-    //            dir = Vector3.zero;
-    //            return;
-    //        }
-    //        _targetNode = _path.Pop();
-
-    //    }
-    //    _rb.velocity = dir.normalized * _speed * Time.deltaTime;
-    //}
-
-    private async void Travel()
+    private void FixedUpdate()
     {
-        while(_path.Count >= 0)
+        if(_targetNode == null) return;
+        if (_path.Count == 0 && _currentNode == _targetNode)
         {
-            if(_path.Count == 0 && _currentNode == _targetNode)
-            {
-                print("arrivé");
-                _targetNode = null;
-                _rb.velocity = Vector2.zero;
-                return;
-            }
-            else if(_currentNode == _targetNode)
-            {
-                _targetNode = _path.Pop();
-            }
-            else
-            {
-                Vector3 dir = _targetNode.transform.position - this.transform.position;
-                _rb.velocity = dir.normalized * Time.deltaTime * _speed;
-                //this.transform.position = _targetNode.transform.position;
-            }
-            await Task.Delay(500);
+            print("arrivé");
+            _targetNode = null;
+            _rb.velocity = Vector2.zero;
+            return;
+        }
+        else if (_currentNode == _targetNode)
+        {
+            _targetNode = _path.Pop();
+        }
+        else
+        {
+            Vector3 dir = _targetNode.transform.position - this.transform.position;
+            _rb.velocity = dir.normalized * Time.deltaTime * _speed;
         }
     }
 
