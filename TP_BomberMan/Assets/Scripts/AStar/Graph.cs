@@ -189,6 +189,7 @@ public class Graph : MonoBehaviour
         foreach(Node node in Nodes)
         {
             node.State = NodeStateEnum.Base;
+            node.HasToUsePriorityColor = false;
             node.PrecedentNode = null;
             node.Rank = 0;
         }

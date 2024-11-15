@@ -40,6 +40,7 @@ public class BotMovement : MonoBehaviour
         foreach(Node node in _path)
         {
             node.HasToUsePriorityColor = true;
+            print(Graph.Instance.Nodes.IndexOf(node));
         }
         _targetNode = _path.Pop();
         Travel();
@@ -69,9 +70,16 @@ public class BotMovement : MonoBehaviour
 
     private async void Travel()
     {
-        while(_path.Count > 0)
+        while(_path.Count >= 0)
         {
-            if(_currentNode == _targetNode)
+            if(_path.Count == 0 && _currentNode == _targetNode)
+            {
+                print("arrivé");
+                _targetNode = null;
+                _rb.velocity = Vector2.zero;
+                return;
+            }
+            else if(_currentNode == _targetNode)
             {
                 _targetNode = _path.Pop();
             }
