@@ -10,6 +10,9 @@ public class BombManager : MonoBehaviour
 
     public List<BombBehaviour> OnFieldBombs { get; set; } = new();
 
+    private List<Vector3> _spawnPos = new() { new(-0.5f, -0.5f, 0), new(-0.5f, 0.5f, 0), new(0.5f, 0.5f), new(0.5f, -0.5f)};
+
+    [SerializeField] private GameObject _parent;
 
     // Singleton
     #region Singleton
@@ -47,7 +50,10 @@ public class BombManager : MonoBehaviour
     {
         for (int i = 0; i < _bombNumber; i++)
         {
-            GameObject newBomb = Instantiate(_bombPrefab);
+            GameObject newBomb = Instantiate(_bombPrefab, _parent.transform);
+            newBomb.TryGetComponent(out BombBehaviour behaviour);
+            OnFieldBombs.Add(behaviour);
+            newBomb.transform.position = GetSpawnPosition();
             Bombs.Enqueue(newBomb);
         }
     }
@@ -63,8 +69,22 @@ public class BombManager : MonoBehaviour
         bomb.TryGetComponent(out BombBehaviour behaviour);
         behaviour.Collider.enabled = true;
         behaviour.SpriteRenderer.sortingOrder = 11;
-        bomb.transform.position = Vector3.zero;
+        bomb.transform.position = GetSpawnPosition();
         OnFieldBombs.Add(behaviour);
         return bomb;
+    }
+
+    private Vector3 GetSpawnPosition()
+    {
+        List<Vector3> list = _spawnPos;
+        foreach(BombBehaviour bomb in OnFieldBombs)
+        {
+            if (list.Contains(bomb.transform.position))
+            {
+                list.Remove(bomb.transform.position);
+            }
+        }
+
+        return list[Random.Range(0, list.Count - 1)];
     }
 }

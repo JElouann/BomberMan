@@ -34,9 +34,13 @@ public class BotMovement : MonoBehaviour
 
     public void UpdatePath()
     { 
+        _path.Clear();
         _path = Graph.Instance.GetPath(_currentNode, _targetNode);
+        foreach(Node node in _path)
+        {
+            print(node.transform.position);
+        }
         _targetNode = _path.Pop();
-        print(_targetNode.transform.position);
     }
 
     private void FixedUpdate()
@@ -55,7 +59,7 @@ public class BotMovement : MonoBehaviour
                 dir = Vector3.zero;
                 return;
             }
-            _targetNode = _path.Pop();
+            //_targetNode = _path.Pop();
             
         }
         _rb.velocity = dir.normalized * _speed * Time.deltaTime;
@@ -66,8 +70,16 @@ public class BotMovement : MonoBehaviour
         if (collision.TryGetComponent(out Node node))
         {
             _currentNode = node;
-            //if (node != _targetNode) return;
-            //_targetNode = _path.Pop();
+            if(node == _targetNode && _path.Count > 0)
+            {
+                _targetNode = _path.Pop();
+            }
+            else if(node == _targetNode && _path.Count == 0)
+            {
+                print("arrivé");
+                _targetNode = null;
+                _rb.velocity = Vector3.zero;
+            }
         }
     }
 
