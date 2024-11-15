@@ -128,5 +128,7 @@ public class BotMovement : MonoBehaviour
             if (Vector3.Distance(bomb.transform.position, this.transform.position) < Vector3.Distance(targetBomb.transform.position, this.transform.position)) targetBomb = bomb;
         }
         _targetNode = Graph.Instance.Nodes[(Graph.Instance.Nodes.Count - 1) / 2];
+        PushToTarget = BombManager.Instance.GetRandomBomb().Node;
+        UpdatePath();
     }
 }

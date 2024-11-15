@@ -11,6 +11,8 @@ public class BombBehaviour : MonoBehaviour
     public SpriteRenderer SpriteRenderer;
     private Animator _animator;
 
+    public Node Node;
+
     private void Start()
     {
         Collider = this.TryGetComponent(out Collider2D collider) ? collider : null;
@@ -110,5 +112,13 @@ public class BombBehaviour : MonoBehaviour
         StartBombCooldown();
         yield return new WaitForSeconds(0.4f);
         this.SpriteRenderer.sortingOrder = 9;
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if(collision.TryGetComponent(out Node node))
+        {
+            Node = node;
+        }
     }
 }

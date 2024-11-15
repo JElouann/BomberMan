@@ -87,4 +87,9 @@ public class BombManager : MonoBehaviour
 
         return list[Random.Range(0, list.Count - 1)];
     }
+
+    public BombBehaviour GetRandomBomb()
+    {
+        return OnFieldBombs[Random.Range(0, OnFieldBombs.Count - 1)];
+    }
 }
