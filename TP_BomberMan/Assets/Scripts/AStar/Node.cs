@@ -110,6 +110,8 @@ public class Node : MonoBehaviour
             Gizmos.color = ColorChange();
         }
 
+        if (HasToUsePriorityColor) Gizmos.color = PriorityColor;
+
         Gizmos.DrawSphere(this.transform.position, 0.5f);
         foreach (Node node in Neighbours)
         {

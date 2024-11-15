@@ -38,7 +38,7 @@ public class BotMovement : MonoBehaviour
         _path = Graph.Instance.GetPath(_currentNode, _targetNode);
         foreach(Node node in _path)
         {
-            print(node.transform.position);
+            node.HasToUsePriorityColor = true;
         }
         _targetNode = _path.Pop();
     }
@@ -59,8 +59,8 @@ public class BotMovement : MonoBehaviour
                 dir = Vector3.zero;
                 return;
             }
-            //_targetNode = _path.Pop();
-            
+            _targetNode = _path.Pop();
+
         }
         _rb.velocity = dir.normalized * _speed * Time.deltaTime;
     }
@@ -70,19 +70,19 @@ public class BotMovement : MonoBehaviour
         if (collision.TryGetComponent(out Node node))
         {
             _currentNode = node;
-            if(node == _targetNode && _path.Count > 0)
-            {
-                print("AAAAAAAAAA");
-                _targetNode.HasToUsePriorityColor = false;
-                _targetNode = _path.Pop();
-                _targetNode.HasToUsePriorityColor = true;
-            }
-            else if(node == _targetNode && _path.Count == 0)
-            {
-                print("arrivé");
-                _targetNode = null;
-                _rb.velocity = Vector3.zero;
-            }
+            //if (node == _targetNode && _path.Count > 0)
+            //{
+            //    print("AAAAAAAAAA");
+            //    _targetNode.HasToUsePriorityColor = false;
+            //    _targetNode = _path.Pop();
+            //    _targetNode.HasToUsePriorityColor = true;
+            //}
+            //else if (node == _targetNode && _path.Count == 0)
+            //{
+            //    print("arrivé");
+            //    _targetNode = null;
+            //    _rb.velocity = Vector3.zero;
+            //}
         }
     }
 
