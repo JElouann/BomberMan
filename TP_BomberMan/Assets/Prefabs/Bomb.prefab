@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1200408528468092067}
   - component: {fileID: 793032447767586003}
   - component: {fileID: 1576128846310908785}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Bomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48,6 +48,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cooldown: 3
+  Collider: {fileID: 0}
+  Rb: {fileID: 0}
+  SpriteRenderer: {fileID: 0}
+  Node: {fileID: 0}
 --- !u!212 &1200408528468092067
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -136,7 +140,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 127
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -155,4 +159,4 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: -0.18869358}
   serializedVersion: 2
-  m_Radius: 0.35818136
+  m_Radius: 0.28799146

@@ -10,6 +10,8 @@ public class NodeMapGenerator : MonoBehaviour
     [SerializeField] private GameObject _null;
     [SerializeField] private GameObject _parent;
 
+    [SerializeField] private AStarTheOneAndOnly nodeParent;
+
     public List<List<Node>> Nodes = new();
 
     private void Start()
@@ -31,7 +33,7 @@ public class NodeMapGenerator : MonoBehaviour
                     GameObject test = Instantiate(_test, _parent.transform);
                     test.transform.localPosition = new Vector3(x, y, 0);
                     test.TryGetComponent(out Node node);
-                    node.ParentGraph = Graph.Instance;
+                    node.ParentGraph = nodeParent;
                     node.IsFiller = false;
                     nodes.Add(node);
                 }

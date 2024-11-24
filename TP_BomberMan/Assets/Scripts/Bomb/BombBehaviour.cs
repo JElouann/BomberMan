@@ -35,10 +35,10 @@ public class BombBehaviour : MonoBehaviour
 
     public void Explode()
     {
-        RaycastHit2D topHit = Physics2D.Raycast(transform.position, Vector2.up, 1);
-        RaycastHit2D botHit = Physics2D.Raycast(transform.position, Vector2.down, 1);
-        RaycastHit2D leftHit = Physics2D.Raycast(transform.position, Vector2.left, 1);
-        RaycastHit2D rightHit = Physics2D.Raycast(transform.position, Vector2.right, 1);
+        RaycastHit2D topHit = Physics2D.Raycast(transform.position, Vector2.up, 6);
+        RaycastHit2D botHit = Physics2D.Raycast(transform.position, Vector2.down, 6);
+        RaycastHit2D leftHit = Physics2D.Raycast(transform.position, Vector2.left, 6);
+        RaycastHit2D rightHit = Physics2D.Raycast(transform.position, Vector2.right, 6);
 
         if(topHit.collider != null)
         {

@@ -6,7 +6,7 @@ public class Node : MonoBehaviour
 {
     public bool HasToUsePriorityColor;
     public Color PriorityColor;
-    public Graph ParentGraph;
+    public AStarTheOneAndOnly ParentGraph;
     public List<Node> Neighbours;
 
     // the node that opened this one
@@ -22,7 +22,6 @@ public class Node : MonoBehaviour
     private void Start()
     {
         if (IsFiller) return;
-        ParentGraph = Graph.Instance;
         ParentGraph.Nodes.Add(this);
         StartCoroutine(CheckNeighbours());
     }
@@ -78,7 +77,7 @@ public class Node : MonoBehaviour
     public float GetF()
     {
         // récupérer le g pour obtenir le f
-        return GetDistanceFromTarget(ParentGraph.EndNode) + Rank;
+        return GetDistanceFromTarget(ParentGraph.End) + Rank;
     }
 
     private float GetDistanceFromTarget(Node target)
@@ -89,7 +88,7 @@ public class Node : MonoBehaviour
     #region Utilities
     private void OnDrawGizmos()
     {
-        if(IsFiller) return;
+        if(IsFiller | ParentGraph == null) return;
 
         //Gizmos.color = Color.yellow;
         //Gizmos.DrawRay(this.transform.position, Vector2.up);
@@ -97,11 +96,11 @@ public class Node : MonoBehaviour
         //Gizmos.DrawRay(this.transform.position, Vector2.left);
         //Gizmos.DrawRay(this.transform.position, Vector2.right);
 
-        if (ParentGraph.EndNode == this)
+        if (ParentGraph.End == this)
         {
             Gizmos.color = Color.red;
         }
-        else if (ParentGraph.StartNode == this)
+        else if (ParentGraph.Start == this)
         {
             Gizmos.color = Color.green;
         }
@@ -133,14 +132,14 @@ public class Node : MonoBehaviour
         }
     }
     #endregion
-
-    public void Open(Node opener)
+     
+    public void Open(Node opener, List<Node> whichPath)
     {
         // opener = the node that opened this
         PrecedentNode = opener;
         State = NodeStateEnum.Open;
         
-        Rank = ParentGraph.NumOfIteration;
+        Rank = whichPath.IndexOf(this);
     }
 
     public void Close()
