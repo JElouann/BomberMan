@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -10,7 +11,8 @@ public class AStarTheOneAndOnly : MonoBehaviour
 
     [Header("Every Nodes in the graph")]
     private List<List<Node>> _everyPathes = new();
-    public List<Node> _openedNodes = new();
+    public List<Node> OpenedNodes = new();
+    public List<Node> ClosedNodes = new();
 
     #region Visual
 
@@ -37,11 +39,91 @@ public class AStarTheOneAndOnly : MonoBehaviour
         {
             node.State = NodeStateEnum.Base;
         }
-        _openedNodes.Clear();
+        OpenedNodes.Clear();
         _receptaclePath.Clear();
         _everyPathes.Clear();
     }
 
+    public async void FindPath()
+    {
+        Node startNode = Start;
+        Node targetNode = End;
+
+        List<Node> openNodes = new List<Node>();
+        List<Node> closeNodes = new List<Node>();
+        openNodes.Add(startNode);
+
+        while (openNodes.Count > 0)
+        {
+            print(openNodes.Count);
+            Node currentNode = openNodes[0];
+            for (int i = 1; i < openNodes.Count; i++)
+            {
+                if (openNodes[i].fCost < currentNode.fCost || openNodes[i].fCost == currentNode.fCost && openNodes[i].hCost < currentNode.hCost)
+                {
+                    currentNode = openNodes[i];
+                }
+            }
+
+            openNodes.Remove(currentNode);
+            closeNodes.Add(currentNode);
+
+            if (currentNode == targetNode)
+            {
+                RetracePath(startNode, targetNode);
+                return;
+            }
+
+            foreach(Node neighbour in currentNode.Neighbours)
+            {
+                if (closeNodes.Contains(neighbour))
+                {
+                    continue;
+                }
+
+                //float newMovementCostToNeighbour = currentNode.gCost + Vector3.Distance(currentNode.transform.position, neighbour.transform.position);
+                float newMovementCostToNeighbour = currentNode.gCost + GetStepNumber(neighbour); //
+                if (newMovementCostToNeighbour < currentNode.gCost || !openNodes.Contains(neighbour))
+                {
+                    neighbour.gCost = newMovementCostToNeighbour;
+                    neighbour.hCost = Vector3.Distance(neighbour.transform.position, targetNode.transform.position);
+                    neighbour.PrecedentNode = currentNode;
+
+                    if (!openNodes.Contains(neighbour))
+                    {
+                        openNodes.Add(neighbour);
+                    }
+                }
+            }
+
+            await Task.Delay(600);
+        }
+    }
+
+    void RetracePath(Node startNode, Node endNode)
+    {
+        List<Node> path = new List<Node>();
+        Node currentNode = endNode;
+        while (currentNode != startNode)
+        {
+            path.Add(currentNode);
+            currentNode.HasToUsePriorityColor = true;
+            currentNode = currentNode.PrecedentNode;
+        }
+        path.Reverse();
+    }
+
+    public int GetStepNumber(Node node)
+    {
+        int stepNumber = 1;
+        Node checker = node;
+        while (checker.PrecedentNode != null)
+        {
+            stepNumber++;
+            checker = checker.PrecedentNode;
+        }
+        return stepNumber;
+    }
 
     public async void Travel()
     {
@@ -49,19 +131,34 @@ public class AStarTheOneAndOnly : MonoBehaviour
         ProcessNode(Start);
         _receptaclePath.Add(Start);
         AddPathes(Start);
-        while (!_openedNodes.Contains(End))
-        {
-            // reset at each iteration
-            List<Node> path = new();
-            path = _receptaclePath;
 
-            _receptaclePath = GetLowerFPath();
+        while (!OpenedNodes.Contains(End))
+        {
+            // obtenir les noeuds pas ouverts pour les ignorer après
+            List<List<Node>> notOpen = new();
+            foreach(List<Node> path in _everyPathes)
+            {
+                if (path[path.Count - 1].State != NodeStateEnum.Open)
+                {
+                    notOpen.Add(path);
+                }   
+            }
             
+            _receptaclePath = GetLowerFPath(notOpen);
+            foreach(Node node in _receptaclePath)
+            {
+                print(node);
+            }
+
             _currentNode = _receptaclePath[_receptaclePath.Count - 1];
+
+
             // ferme ce noeud et ouvre ses voisins
             ProcessNode(_currentNode);
+
             // crée chemin avec son noeud le moins f en dernier
             AddPathes(_currentNode);
+
             await Task.Delay(600);
         }
     }
@@ -74,12 +171,11 @@ public class AStarTheOneAndOnly : MonoBehaviour
             if (neighbour == End)
             {
                 print("DETECTED END");
-                _openedNodes.Add(neighbour);
+                OpenedNodes.Add(neighbour);
             }
             if (neighbour.State != NodeStateEnum.Closed)
             {
                 neighbour.Open(node, _receptaclePath);
-                _openedNodes.Add(neighbour);
             }
         }
     }
@@ -88,6 +184,8 @@ public class AStarTheOneAndOnly : MonoBehaviour
     {
         Node bestNeighbour = GetLowerFNode(forWhichNode.Neighbours);
         _receptaclePath.Add(bestNeighbour);
+
+        //_receptaclePath.Add(forWhichNode);
         _everyPathes.Add(_receptaclePath);
     }
 
@@ -112,18 +210,20 @@ public class AStarTheOneAndOnly : MonoBehaviour
     {
         // initialize lists
         List<Node> bestPath = new();
-        bestPath = _receptaclePath;
         List<List<Node>> equalBestPathes = new();
 
         // iterate over every pathes to get lower pathes
-        foreach(List<Node> path in _everyPathes)
+        foreach (List<Node> path in _everyPathes)
         {
             // cancel current iteration if path has to be ignored
-            if(ignoredPathes != null)
+            if (ignoredPathes != null)
             {
                 if (ignoredPathes.Contains(path)) break;
             }
-
+            else if (bestPath == null)
+            {
+                bestPath = path;
+            }
             // or switch the current receptacle path if his f is bigger than current iteration
             else if (path[path.Count - 1].GetF() < bestPath[bestPath.Count - 1].GetF())
             {
@@ -131,7 +231,22 @@ public class AStarTheOneAndOnly : MonoBehaviour
                 bestPath = path;
             }
         }
+
+        List<List<Node>> equalBest = new();
+        foreach (List<Node> path in _everyPathes)
+        {
+            if(path == bestPath)
+            {
+                equalBest.Add(path);
+            }
+        }
+
+        if (equalBestPathes.Count > 1)
+        {
+            bestPath = equalBest[Random.Range(0, equalBestPathes.Count)];
+        }
         
+        print("best path is " +  bestPath + " with " + bestPath[bestPath.Count - 1].GetF());
         return bestPath;
     }
 }

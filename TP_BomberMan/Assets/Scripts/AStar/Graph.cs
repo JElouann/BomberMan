@@ -82,8 +82,8 @@
 //        _finished = false;
 
 //        Stack<Node> path = new Stack<Node>();
-        
-//        foreach(Node node in Travel())
+
+//        foreach (Node node in Travel())
 //        {
 //            path.Push(node);
 //        }
@@ -182,7 +182,7 @@
 
 //                // check number of precedent nodes
 //                Node checker = CurrentNode;
-//                while(checker.PrecedentNode != null)
+//                while (checker.PrecedentNode != null)
 //                {
 //                    neighbourRank++;
 //                    checker = checker.PrecedentNode;
@@ -191,14 +191,14 @@
 
 //                // on l'ajoute à la liste des voisins ouverts ainsi que son f
 //                OpenedNeighbours.Add(neighbour);
-//                NeighboursFValues.Add(neighbour.GetF());                
+//                NeighboursFValues.Add(neighbour.GetF());
 //            }
 //        }
 //    }
 
 //    public void ResetNodes()
 //    {
-//        foreach(Node node in Nodes)
+//        foreach (Node node in Nodes)
 //        {
 //            node.State = NodeStateEnum.Base;
 //            node.HasToUsePriorityColor = false;

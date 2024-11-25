@@ -14,6 +14,10 @@ public class Node : MonoBehaviour
 
     public int Rank;
 
+    public float gCost;
+    public float hCost;
+    public float fCost { get { return gCost + hCost; } }
+
     // base si pas touché, open ou closed
     public NodeStateEnum State;
 
@@ -140,11 +144,14 @@ public class Node : MonoBehaviour
         State = NodeStateEnum.Open;
         
         Rank = whichPath.IndexOf(this);
+        ParentGraph.OpenedNodes.Add(this);
     }
 
     public void Close()
     {
         State = NodeStateEnum.Closed;
+        ParentGraph.OpenedNodes.Remove(this);
+        ParentGraph.ClosedNodes.Add(this);
     }
 
     public Color ColorChange()
