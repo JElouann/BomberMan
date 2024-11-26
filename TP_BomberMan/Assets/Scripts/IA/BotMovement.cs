@@ -75,7 +75,6 @@ public class BotMovement : MonoBehaviour
         if (collision.TryGetComponent(out Node node))
         {
             AStarTheOneAndOnly.Instance.FindPath(node, AStarTheOneAndOnly.Instance.End);
-            AStarTheOneAndOnly.Instance.FindPath(node, AStarTheOneAndOnly.Instance.End);
             //AStarTheOneAndOnly.Instance.Start = _currentNode;
             //if (node == _targetNode && _path.Count > 0)
             //{

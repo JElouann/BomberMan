@@ -37,8 +37,6 @@ public class AStarTheOneAndOnly : MonoBehaviour
 
     public List<Node> Path;
 
-    public int numOfIter;
-
     // Singleton
     #region Singleton
     private static AStarTheOneAndOnly _instance;
@@ -71,26 +69,8 @@ public class AStarTheOneAndOnly : MonoBehaviour
     }
     #endregion
 
-    private void Reset()
-    {
-        foreach(Node node in Nodes)
-        {
-            node.State = NodeStateEnum.Base;
-        }
-        OpenedNodes.Clear();
-        _receptaclePath.Clear();
-        _everyPathes.Clear();
-    }
-
-    //private void Update()
-    //{
-    //    FindPath(Start, End);
-    //}
-
     public void FindPath(Node startNode, Node targetNode)
     {
-        numOfIter++;
-        print(numOfIter);
         foreach(Node node in Nodes)
         {
             node.gCost = 0;
@@ -160,17 +140,30 @@ public class AStarTheOneAndOnly : MonoBehaviour
         Path = path;
     }
 
-    public int GetStepNumber(Node node)
-    {
-        int stepNumber = 1;
-        Node checker = node;
-        while (checker.PrecedentNode != null)
-        {
-            stepNumber++;
-            checker = checker.PrecedentNode;
-        }
-        return stepNumber;
-    }
+    #region old version
+
+    //private void Reset()
+    //{
+    //    foreach(Node node in Nodes)
+    //    {
+    //        node.State = NodeStateEnum.Base;
+    //    }
+    //    OpenedNodes.Clear();
+    //    _receptaclePath.Clear();
+    //    _everyPathes.Clear();
+    //}
+
+    //public int GetStepNumber(Node node)
+    //{
+    //    int stepNumber = 1;
+    //    Node checker = node;
+    //    while (checker.PrecedentNode != null)
+    //    {
+    //        stepNumber++;
+    //        checker = checker.PrecedentNode;
+    //    }
+    //    return stepNumber;
+    //}
 
     //public async void Travel()
     //{
@@ -190,7 +183,7 @@ public class AStarTheOneAndOnly : MonoBehaviour
     //                notOpen.Add(path);
     //            }   
     //        }
-            
+
     //        _receptaclePath = GetLowerFPath(notOpen);
     //        foreach(Node node in _receptaclePath)
     //        {
@@ -292,8 +285,10 @@ public class AStarTheOneAndOnly : MonoBehaviour
     //    {
     //        bestPath = equalBest[Random.Range(0, equalBestPathes.Count)];
     //    }
-        
+
     //    print("best path is " +  bestPath + " with " + bestPath[bestPath.Count - 1].GetF());
     //    return bestPath;
     //}
+
+    #endregion
 }
