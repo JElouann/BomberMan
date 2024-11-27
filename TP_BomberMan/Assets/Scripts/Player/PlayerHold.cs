@@ -20,7 +20,7 @@ public class PlayerHold : MonoBehaviour
         GameObject bomb = BombSlot.transform.GetChild(0).gameObject;
         bomb.TryGetComponent(out BombBehaviour bombBehaviour);
         StartCoroutine(bombBehaviour.OnDrop());
-        bomb.transform.parent = null;
+        bomb.transform.parent = BombManager.Instance.transform;
         bomb.transform.DOJump(transform.position, 0.4f, 1, 0.4f);
     }
 }

@@ -6,19 +6,19 @@ using UnityEngine;
 public class BombBehaviour : MonoBehaviour
 {
     [SerializeField] private float _cooldown;
-    public Collider2D Collider;
+    public CircleCollider2D Collider;
     public Rigidbody2D Rb;
     public SpriteRenderer SpriteRenderer;
-    private Animator _animator;
+    public Animator Animator;
 
     public Node Node;
 
-    private void Start()
+    private void Awake()
     {
-        Collider = this.TryGetComponent(out Collider2D collider) ? collider : null;
+        Collider = this.TryGetComponent(out CircleCollider2D collider) ? collider : null;
         Rb = this.TryGetComponent(out Rigidbody2D rb) ? rb : null;
         SpriteRenderer = this.TryGetComponent(out SpriteRenderer spriteRenderer) ? spriteRenderer : null;
-        _animator = this.TryGetComponent(out Animator animator) ? animator : null;
+        Animator = this.TryGetComponent(out Animator animator) ? animator : null;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -35,6 +35,7 @@ public class BombBehaviour : MonoBehaviour
 
     public void Explode()
     {
+        Camera.main.DOShakePosition(0.5f, 1f, 13);
         RaycastHit2D topHit = Physics2D.Raycast(transform.position, Vector2.up, 6);
         RaycastHit2D botHit = Physics2D.Raycast(transform.position, Vector2.down, 6);
         RaycastHit2D leftHit = Physics2D.Raycast(transform.position, Vector2.left, 6);
@@ -93,17 +94,19 @@ public class BombBehaviour : MonoBehaviour
 
     private IEnumerator ExplodeIn(float seconds)
     {
-        _animator.SetBool("PreExplode", true);
+        Animator.SetBool("PreExplode", true);
         yield return new WaitForSeconds(seconds);
         this.transform.DOScale(2, 0.1f);
-        _animator.SetBool("PreExplode", false);
-        _animator.SetBool("Exploding", true);
+        Animator.SetBool("PreExplode", false);
+        Animator.SetBool("Exploding", true);
         this.transform.Rotate(Vector3.forward * 45);
         
         Explode();
         
         yield return new WaitForSeconds(0.55f);
         SpriteRenderer.DOFade(0, 0.5f);
+        yield return new WaitForSeconds(0.5f);
+        BombManager.Instance.AddToQueue(this.gameObject);
     }
 
     public IEnumerator OnDrop()

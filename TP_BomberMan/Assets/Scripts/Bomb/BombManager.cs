@@ -1,16 +1,19 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class BombManager : MonoBehaviour
 {
     [SerializeField] private int _bombNumber;
+    [SerializeField] private int _bombNumberOnField;
     [SerializeField] private GameObject _bombPrefab;
     public Queue<GameObject> Bombs { get; set; } = new();
 
     public List<BombBehaviour> OnFieldBombs { get; set; } = new();
 
-    private List<Vector3> _spawnPos = new() { new(-0.5f, -0.5f, 0), new(-0.5f, 0.5f, 0), new(0.5f, 0.5f), new(0.5f, -0.5f)};
+    private List<Vector3> _spawnPos;
 
     [SerializeField] private GameObject _parent;
 
@@ -46,50 +49,77 @@ public class BombManager : MonoBehaviour
     }
     #endregion
 
-    private void Start()
+    private async void Start()
     {
         for (int i = 0; i < _bombNumber; i++)
         {
             GameObject newBomb = Instantiate(_bombPrefab, _parent.transform);
             newBomb.TryGetComponent(out BombBehaviour behaviour);
             OnFieldBombs.Add(behaviour);
-            newBomb.transform.position = GetSpawnPosition();
-            Bombs.Enqueue(newBomb);
+            AddToQueue(newBomb);
+        }
+
+        await Task.Delay(100);
+
+        for(int i = 0; i < _bombNumberOnField; i++)
+        {
+            RemoveFromQueue();
         }
     }
-
+    
     public void AddToQueue(GameObject bomb)
     {
+        bomb.TryGetComponent(out BombBehaviour behaviour);
+        OnFieldBombs.Remove(behaviour);
+        behaviour.Collider.enabled = false;
+        behaviour.SpriteRenderer.DOFade(1, 0);
+        behaviour.SpriteRenderer.enabled = false;
+        behaviour.transform.localScale = Vector3.zero;
 
+        Bombs.Enqueue(bomb);
     }
 
     public GameObject RemoveFromQueue()
     {
         GameObject bomb = Bombs.Dequeue();
         bomb.TryGetComponent(out BombBehaviour behaviour);
-        behaviour.Collider.enabled = true;
-        behaviour.SpriteRenderer.sortingOrder = 11;
+        behaviour.Animator.SetBool("Exploding", false);
+        behaviour.Animator.SetBool("PreExplode", true);
         bomb.transform.position = GetSpawnPosition();
+        behaviour.Collider.enabled = true;
+        behaviour.SpriteRenderer.enabled = true;
+        behaviour.SpriteRenderer.sortingOrder = 11;
+        behaviour.transform.DOScale(1, 0.5f).SetEase(Ease.OutElastic);
         OnFieldBombs.Add(behaviour);
         return bomb;
     }
 
     private Vector3 GetSpawnPosition()
     {
-        List<Vector3> list = _spawnPos;
-        foreach(BombBehaviour bomb in OnFieldBombs)
+        print(AStarTheOneAndOnly.Instance.Nodes.Count);
+        List<Vector3> spawnPos = new();
+        foreach (Node node in AStarTheOneAndOnly.Instance.Nodes)
         {
-            if (list.Contains(bomb.transform.position))
+            spawnPos.Add(node.transform.position);
+        }
+
+        foreach (BombBehaviour bomb in OnFieldBombs)
+        {
+            if (spawnPos.Contains(bomb.transform.position))
             {
-                list.Remove(bomb.transform.position);
+                spawnPos.Remove(bomb.transform.position);
             }
         }
 
-        return list[Random.Range(0, list.Count - 1)];
+        return spawnPos[Random.Range(0, spawnPos.Count)];
     }
 
-    public BombBehaviour GetRandomBomb()
+    private void Update()
     {
-        return OnFieldBombs[Random.Range(0, OnFieldBombs.Count - 1)];
+        if (OnFieldBombs.Count < _bombNumberOnField)
+        {
+            print("need bomb");
+            RemoveFromQueue();
+        }
     }
 }

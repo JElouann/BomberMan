@@ -14,7 +14,7 @@ public class NodeMapGenerator : MonoBehaviour
 
     public List<List<Node>> Nodes = new();
 
-    private void Start()
+    private void Awake()
     {
         BoundsInt bounds = _map.cellBounds;
         TileBase[] allTiles = _map.GetTilesBlock(bounds);
